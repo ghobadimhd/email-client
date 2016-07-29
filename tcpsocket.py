@@ -13,7 +13,7 @@ class tcpsocket :
 	def recvSingleLine(self):
 		data = b'' 
 		while True :
-			byte = self.sock.recv(1) 
+			byte = self.sock.recv(1)
 			data = data + byte 
 			if byte[0] == 13 : # check for CR 
 				byte = self.sock.recv(1) 
@@ -22,5 +22,9 @@ class tcpsocket :
 					break # we find CR and LF let's get out of loop 
 
 		return data 
-
+	def recvMultiLine(self , chunk:int):
+		data = self.sock.recv(chunk)
+		while data[-5:] != b"\r\n.\r\n" and (len(data) != 3 and data != b".\r\n" ) : # if data not ended with CRLF.CRLF then get remaining 
+			data = data + self.sock.recv(chunk) 
+		return data 
 
