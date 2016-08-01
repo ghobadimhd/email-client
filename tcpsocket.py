@@ -35,8 +35,9 @@ class pop3():
 	"""this class implement pop3 command's """
 	def __init__(self):
 		self.sock = tcpsocket() 
-	def connect(address , port):
-		pass 
+	def connect(self ,address , port):
+		self.sock.connect(address , port ) 
+		return self.sock.recvSingleLine() # return hello  
 	def user(self , username):
 		pass 
 	def pass_(self , password) :
