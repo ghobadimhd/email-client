@@ -27,4 +27,5 @@ class tcpsocket :
 		while data[-5:] != b"\r\n.\r\n" and (len(data) != 3 and data != b".\r\n" ) : # if data not ended with CRLF.CRLF then get remaining 
 			data = data + self.sock.recv(chunk) 
 		return data 
-
+	def close() : 
+		sock.close()
