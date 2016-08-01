@@ -29,3 +29,32 @@ class tcpsocket :
 		return data 
 	def close() : 
 		sock.close()
+
+
+class pop3():
+	"""this class implement pop3 command's """
+	def __init__(self, ):
+		self.sock = tcpsocket() 
+	def connect(address , port):
+		pass
+	def user(username):
+		pass 
+	def pass_(password) :
+		pass
+	def list(msg=None):
+		pass 
+	def stat():
+		pass
+	def retr(msg):
+		pass
+	def dele(msg):
+		pass 
+	def noop():
+		pass
+	def quit(): 
+		pass
+	def top(msg ,  line=1 ):
+		pass 
+	def close():
+		pass
+		
