@@ -34,62 +34,62 @@ class tcpsocket :
 class pop3():
 	"""this class implement pop3 command's """
 	def __init__(self):
-		self.sock = tcpsocket() 
+		self.ts = tcpsocket() 
 	def connect(self ,address , port):
-		self.sock.connect(address , port ) 
-		return self.sock.recvSingleLine() # return hello  
+		self.ts.connect(address , port ) 
+		return self.ts.recvSingleLine() # return hello  
 	def user(self , username):
 		cmd = b'user ' + username.encode() 
-		self.sock.send(cmd) 
-		return self.sock.recvSingleLine() 
+		self.ts.send(cmd) 
+		return self.ts.recvSingleLine() 
 
 	def pass_(self , password) :
 		cmd = b'pass ' + password.encode()
-		self.sock.send(cmd)
-		return self.sock.recvSingleLine()
+		self.ts.send(cmd)
+		return self.ts.recvSingleLine()
 	def list(self ,msg=None):
 		if msg == None : 
 			cmd = b'list'
 		else : 
 			cmd = b'list ' + str(msg).encode()
-		self.sock.send(cmd)
+		self.ts.send(cmd)
 		if msg == None : 
-			return self.sock.recvMultiLine() 
-		return self.sock.recvSingleLine()
+			return self.ts.recvMultiLine() 
+		return self.ts.recvSingleLine()
 
 	def stat(self ):
 		cmd = b'stat'
-		self.sock.send(cmd)
-		return self.sock.recvSingleLine()
+		self.ts.send(cmd)
+		return self.ts.recvSingleLine()
 	def retr(self ,msg):
 		cmd = b'retr ' + str(msg).encode()
-		self.sock.send(cmd)
-		return self.sock.recvMultiLine() 
+		self.ts.send(cmd)
+		return self.ts.recvMultiLine() 
 	def dele(self ,msg):
 		cmd = b'dele ' + str(msg).encode()
-		self.sock.send()
-		return self.sock.recvSingleLine()
+		self.ts.send()
+		return self.ts.recvSingleLine()
 	def noop(self ):
-		self.sock.send('noop'.encode())
-		return self.sock.recvSingleLine()
+		self.ts.send('noop'.encode())
+		return self.ts.recvSingleLine()
 	def quit(self ): 
 		cmd = b'quit' 
-		self.sock.send(cmd)
-		return self.sock.recvSingleLine()
+		self.ts.send(cmd)
+		return self.ts.recvSingleLine()
 	def top(self ,msg ,  line=1 ):
 		cmd = b'top ' + str(msg).encode() +b' '  + line.encode() 
-		self.sock.send(cmd)
-		self.sock.recvMultiLine()
+		self.ts.send(cmd)
+		self.ts.recvMultiLine()
 	def close(self ,):
-		self.sock.close() 
+		self.ts.close() 
 	def uidl(self , msg=None):
 		if msg == None : 
 			cmd = b'uidl '
 		else : 
 			cmd = b'uidl ' + str(msg).encode()
-		self.sock.send(cmd)
+		self.ts.send(cmd)
 		if msg == None : 
-			return self.sock.recvMultiLine() 
-		return self.sock.recvSingleLine()
+			return self.ts.recvMultiLine() 
+		return self.ts.recvSingleLine()
 
 		
