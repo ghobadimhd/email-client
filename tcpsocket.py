@@ -6,8 +6,8 @@ class tcpsocket :
 	def connect(self , address:str , port:int ) : # connect to server 
 		self.sock = socket.socket(socket.AF_INET , socket.SOCK_STREAM)
 		self.sock.connect((address , port)) 
-	def send(self , data): # it send data to socket 
-		self.sock.send(data)
+	def send(self , data:bytes): # it send data to socket 
+		self.sock.send(data+b"\r\n")
 	def strToByte(string:str ):
 		return string.encode()
 	def recvSingleLine(self):
