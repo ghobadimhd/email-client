@@ -39,23 +39,57 @@ class pop3():
 		self.sock.connect(address , port ) 
 		return self.sock.recvSingleLine() # return hello  
 	def user(self , username):
-		pass 
+		cmd = b'user ' + username.encode() 
+		self.sock.send(cmd) 
+		return self.sock.recvSingleLine() 
+
 	def pass_(self , password) :
-		pass
+		cmd = b'pass ' + password.encode()
+		self.sock.send(cmd)
+		return self.sock.recvSingleLine()
 	def list(self ,msg=None):
-		pass 
-	def stat(self ,):
-		pass
+		if msg == None : 
+			cmd = b'list'
+		else : 
+			cmd = b'list ' + str(msg).encode()
+		self.sock.send(cmd)
+		if msg == None : 
+			return self.sock.recvMultiLine() 
+		return self.sock.recvSingleLine()
+
+	def stat(self ):
+		cmd = b'stat'
+		self.sock.send(cmd)
+		return self.sock.recvSingleLine()
 	def retr(self ,msg):
-		pass
+		cmd = b'retr ' + str(msg).encode()
+		self.sock.send(cmd)
+		return self.sock.recvMultiLine() 
 	def dele(self ,msg):
-		pass 
-	def noop(self ,):
-		pass
-	def quit(self ,): 
-		pass
+		cmd = b'dele ' + str(msg).encode()
+		self.sock.send()
+		return self.sock.recvSingleLine()
+	def noop(self ):
+		self.sock.send('noop'.encode())
+		return self.sock.recvSingleLine()
+	def quit(self ): 
+		cmd = b'quit' 
+		self.sock.send(cmd)
+		return self.sock.recvSingleLine()
 	def top(self ,msg ,  line=1 ):
-		pass 
+		cmd = b'top ' + str(msg).encode() +b' '  + line.encode() 
+		self.sock.send(cmd)
+		self.sock.recvMultiLine()
 	def close(self ,):
 		self.sock.close() 
+	def uidl(self , msg=None):
+		if msg == None : 
+			cmd = b'uidl '
+		else : 
+			cmd = b'uidl ' + str(msg).encode()
+		self.sock.send(cmd)
+		if msg == None : 
+			return self.sock.recvMultiLine() 
+		return self.sock.recvSingleLine()
+
 		
