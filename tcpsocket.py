@@ -33,28 +33,28 @@ class tcpsocket :
 
 class pop3():
 	"""this class implement pop3 command's """
-	def __init__(self, ):
+	def __init__(self):
 		self.sock = tcpsocket() 
 	def connect(address , port):
-		pass
-	def user(username):
 		pass 
-	def pass_(password) :
-		pass
-	def list(msg=None):
+	def user(self , username):
 		pass 
-	def stat():
+	def pass_(self , password) :
 		pass
-	def retr(msg):
-		pass
-	def dele(msg):
+	def list(self ,msg=None):
 		pass 
-	def noop():
+	def stat(self ,):
 		pass
-	def quit(): 
+	def retr(self ,msg):
 		pass
-	def top(msg ,  line=1 ):
+	def dele(self ,msg):
 		pass 
-	def close():
+	def noop(self ,):
 		pass
+	def quit(self ,): 
+		pass
+	def top(self ,msg ,  line=1 ):
+		pass 
+	def close(self ,):
+		self.sock.close() 
 		
