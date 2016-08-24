@@ -91,5 +91,15 @@ class pop3():
 		if msg == None : 
 			return self.ts.recvMultiLine() 
 		return self.ts.recvSingleLine()
+	def checkStatus(self,data:bytes , msg:list=None):
+		print ('%'*40,type(data))
+		status = data[0] == b'+' 
+		if msg != None  :
+			string = data.decode() 
+			index = string.find("\r\n")
+			print('index : ' , index)
+			msg.clear()
+			msg.append(string[1:index])
+		return status 
 
 		
