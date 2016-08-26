@@ -47,3 +47,26 @@ class pop3parser :
         for record  in matchList : 
             output.append((int(record[0]) , record[1])) 
         return   output
+    def retr(retrInput:str): 
+        pattern = {'from':'\r\n^from: (.*)\r\n' , 
+        'to':'\r\nto: *(.*)\r\n' , 
+        'cc':'^\r\ncc: (.*)\r\n' , 
+        'replay-to':'\r\nreplay-to: (.*)\r\n' , 
+        'date':'\r\ndate: (.*)\r\n' , 
+        'content-type':'\r\ncontent-type: (.*)\r\n' , 
+        'message-id':'\r\nmessage-id: (.*)\r\n' , 
+        'mime-version':'\r\nmime-version: (.*)\r\n' , 
+        'return-path':'\r\nreturn-path: (.*)\r\n' , 
+        'user-agent':'\r\nuser-agent: (.*)\r\n' , 
+        'delivered-to':'\r\ndelivered-to: (.*)\r\n' , 
+        'x-mailer':'\r\nx-mailer: (.*)\r\n' 
+        }
+        mail = {}
+        for data in pattern.keys() : 
+            regex = re.compile(pattern[data], re.I )
+            match = regex.findall(retrInput)
+            if len(match) > 0 : 
+                mail[data] = match[0]
+        bodyStartIndex = retrInput.find("\r\n\r\n")
+        mail['body'] = retrInput[bodyStartIndex+4:]
+        return mail 
