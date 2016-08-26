@@ -1,23 +1,8 @@
 import re 
 class mail  :
-    def __init__(self):
-        self.subject = '' 
-        self.body = ''
-        self.to = '' 
-        self.cc = '' 
-        self.replayTo = '' 
-        self.contentType = '' 
-        self.returnPath = ''
-        self.date = ''
-        self.from_ = '' 
-        self.messageId = ''
-        self.mimeVersion = '' 
-        self.contentType = '' 
-        self.userAgent = ''
-        self.xOriginalTo = '' 
-        self.deliveredTo = '' 
-        self.disposition = '' 
-        self.Xmailer = ''
+    def __init__(self , mailParts:dict):
+        self.__dict__.update(mailParts)
+        
 
 class pop3parser : 
     '''
