@@ -38,3 +38,12 @@ class pop3parser :
         match = regex.findall(statInput)
         # fix me : need exception here , checking match (len != zero)
         return (int(match[0][0]) , int(match[0][1]) )
+    def uidl(uidlInput:str):
+        regex = re.compile("([0-9]+) (.+)\r\n")
+        matchList = regex.findall(uidlInput)
+        print(matchList)
+        # convert string's to number 
+        output = [] 
+        for record  in matchList : 
+            output.append((int(record[0]) , record[1])) 
+        return   output
