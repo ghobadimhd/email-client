@@ -33,7 +33,7 @@ class pop3parser :
             output.append((int(record[0]) , record[1])) 
         return   output
     def retr(retrInput:str): 
-        pattern = {'from':'\r\n^from: (.*)\r\n' , 
+        pattern = {'from_':'\r\nfrom: (.*)\r\n' , 
         'to':'\r\nto: *(.*)\r\n' , 
         'cc':'^\r\ncc: (.*)\r\n' , 
         'replay-to':'\r\nreplay-to: (.*)\r\n' , 
