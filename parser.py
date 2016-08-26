@@ -33,3 +33,8 @@ class pop3parser :
         for record  in matchList : 
             output.append((int(record[0]) , int(record[1]))) 
         return   output
+    def stat(statInput:str):
+        regex = re.compile(".*([0-9]+) ([0-9]+)")
+        match = regex.findall(statInput)
+        # fix me : need exception here , checking match (len != zero)
+        return (int(match[0][0]) , int(match[0][1]) )
