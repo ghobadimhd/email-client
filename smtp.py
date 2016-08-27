@@ -6,7 +6,7 @@ class smtp:
 		self.ts.connect(ip , port) 
 		return self.ts.recvSingleLine()
 	def helo(self, hostname):
-		cmd =b'helo' + hostname.encode() 
+		cmd =b'helo ' + hostname.encode() 
 		self.ts.send(cmd)
 		return self.ts.recvSingleLine() 	
 	def mailFrom(self , sender:str):
