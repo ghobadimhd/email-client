@@ -30,3 +30,7 @@ class smtp:
 		self.ts.send('.'.encode())# end of mail 
 		response.append(self.ts.recvSingleLine())
 		return response
+	def quit(self):
+		cmd =b'quit'
+		self.ts.send(cmd)
+		return self.ts.recvSingleLine()
