@@ -13,3 +13,10 @@ class smtp:
 		cmd = b'mail from:' +sender.encode()
 		self.ts.send(cmd)
 		return self.ts.recvSingleLine()
+	def rcptTo(self, rcptList):
+		answer = {} 
+		for mail in rcptList : 
+			cmd = b'rcpt to:' +mail.encode()
+			self.ts.send(cmd)
+			answer[mail] = self.ts.recvSingleLine()
+		return answer
