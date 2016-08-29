@@ -25,10 +25,12 @@ class smtp:
 		cmd = b'data' 
 		mailBody = mailBody.replace('\r\n.\r\n','\r\n..\r\n')
 		self.ts.send(cmd)
-		response.append(self.ts.recvSingleLine())
-		self.ts.send(mailBody.encode())
-		self.ts.send('.'.encode())# end of mail 
-		response.append(self.ts.recvSingleLine())
+		firstResponse = self.ts.recvSingleLine()
+		response.append(firstResponse)
+		if firstResponse[0] == 51 : # if first response start with '3'(= 51)
+			self.ts.send(mailBody.encode())
+			self.ts.send('.'.encode())# end of mail 
+			response.append(self.ts.recvSingleLine())
 		return response
 	def quit(self):
 		cmd =b'quit'
