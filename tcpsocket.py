@@ -85,8 +85,13 @@ class pop3():
 		self.ts.send(cmd)
 		return self.ts.recvSingleLine()
 	def top(self ,msg ,  line=1 ):
-		cmd = b'top ' + str(msg).encode() +b' '  + line.encode() 
+		cmd = b'top ' + str(msg).encode() +b' '  + str(line).encode() 
 		self.ts.send(cmd)
+		status = self.ts.recvSingleLine() # get status message 
+		if len(status) >= 1  and status[0] == 43 : # if respose was positive get rest of response 
+			return status +  self.ts.recvMultiLine()
+		else : 
+			return status 
 		self.ts.recvMultiLine()
 	def close(self ,):
 		self.ts.close() 
