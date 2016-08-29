@@ -68,7 +68,11 @@ class pop3():
 	def retr(self ,msg):
 		cmd = b'retr ' + str(msg).encode()
 		self.ts.send(cmd)
-		return self.ts.recvMultiLine() 
+		status = self.ts.recvSingleLine() # get status message 
+		if len(status) >= 1  and status[0] == 43 : # if respose was positive get rest of response 
+			return status +  self.ts.recvMultiLine()
+		else : 
+			return status 
 	def dele(self ,msg):
 		cmd = b'dele ' + str(msg).encode()
 		self.ts.send()
