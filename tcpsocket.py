@@ -54,7 +54,11 @@ class pop3():
 			cmd = b'list ' + str(msg).encode()
 		self.ts.send(cmd)
 		if msg == None : 
-			return self.ts.recvMultiLine() 
+			status = self.ts.recvSingleLine() # get status message 
+			if len(status) >= 1  and status[0] == 43 : # if respose was positive get rest of response 
+				return status +  self.ts.recvMultiLine() 
+			else : 
+				return status # if response was negative then just return status
 		return self.ts.recvSingleLine()
 
 	def stat(self ):
