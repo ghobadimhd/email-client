@@ -109,8 +109,7 @@ class pop3():
 				return status 
 		return self.ts.recvSingleLine()
 	def checkStatus(self,data:bytes , msg:list=None):
-		print ('%'*40,type(data))
-		status = data[0] == b'+' 
+		status = data[0] == 43 
 		if msg != None  :
 			string = data.decode() 
 			index = string.find("\r\n")
