@@ -19,4 +19,14 @@ class mainWindow (QtGui.QMainWindow):
 			del temp 
 			regex = re.compile('(.*):(.*)')
 		self.Config= regex.findall(setting)
+	def inbox_refresh_button_click():
+		pass 
+	def inbox_remove_button_click() :
+		pass
+	def compose_send_button_click() : 
+		pass
+	def compose_clear_button_click() : 
+		pass
+	def inbox_listView_click(qModelIndex) : 
+		pass 
 
