@@ -59,8 +59,9 @@ class mainWindow (QtGui.QMainWindow):
 		items = QtGui.QStandardItemModel() 
 		
 		for item in self.mails.keys() : 
-			items.appendRow([QtGui.QStandardItem(str(item)+ ' - ' + self.mails[item].from_ + \
-			 ' - ' +self.mails[item].subject)])
+			items.appendRow([QtGui.QStandardItem(str(item)+ ' - ' \
+				+ self.mails[item].from_ \
+				+ ' - ' +self.mails[item].subject)])
 		self.ui.inbox_mails_listView.setModel(items)
 
 	def inbox_remove_button_click() :
@@ -72,11 +73,19 @@ class mainWindow (QtGui.QMainWindow):
 	def inbox_listView_click(qModelIndex) : 
 		pass 
 	def show_error_mbox(title , message) : 
+		'''
+		it's show message box with given title and message 
+		'''
 		mbox = QtGui.QMessageBox()
 		mbox.setWindowTitle(title) 
 		mbox.setText(message) 
 		mbox.exec_()
 	def getMails(self) :
+		'''
+		this method get mail's from pop3 server and save it in self.mails and self.uidl
+		self.mail structre is : [MailNumber(int) , Mail(Mail)]
+
+		'''
 		pop = pop3()
 		# start connection to pop3 server 
 		pop.connect(self.Config['pop3Server'] , 110) 
@@ -98,8 +107,8 @@ class mainWindow (QtGui.QMainWindow):
 		self.mails = {}
 		# get's mail content's by list of uidl's 
 		for entry in self.uidl : 
-			response = pop.retr(entry[0])
+			response = pop.retr(entry[0]) # retrive mail (enttry[0] is mail number from uidl list)
 			if pop.checkStatus(response) :
 				mail =  Mail( pop3parser.retr(response.decode()) ) 
-				mail.uidl= entry[1]
+				mail.uidl= entry[1] # save mail uidl in mail object 
 				self.mails[entry[0]] = mail
