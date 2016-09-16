@@ -44,7 +44,8 @@ class pop3parser :
         'return-path':'\r\nreturn-path: (.*)\r\n' , 
         'user-agent':'\r\nuser-agent: (.*)\r\n' , 
         'delivered-to':'\r\ndelivered-to: (.*)\r\n' , 
-        'x-mailer':'\r\nx-mailer: (.*)\r\n' 
+        'x-mailer':'\r\nx-mailer: (.*)\r\n' ,
+        'subject':'\r\nsubject: (.*)\r\n'
         }
         mail = {}
         for data in pattern.keys() : 
