@@ -65,8 +65,19 @@ class mainWindow (QtGui.QMainWindow):
 				+ ' - ' +self.mails[item].subject)])
 		self.ui.inbox_mails_listView.setModel(items)
 
-	def inbox_remove_button_click() :
-		pass
+	def inbox_remove_button_click(self) :
+		'''
+		remove mail from inbox 
+		'''
+		selectedItems = self.ui.inbox_mails_listView.selectionModel().selectedIndexes()
+		if selectedItems :
+			mailNumber = self.ui.inbox_mails_listView.selectionModel().selectedIndexes()[0].row() + 1 
+			mailUidl = self.mails[mailNumber].uidl
+			if self.remove_mail_from_pop3_inbox(mailUidl):
+				#Refresh list 
+				self.inbox_refresh_button_click()
+		else : 
+			self.show_error_mbox('select mail', 'Please select a mail from list')
 	def compose_send_button_click() : 
 		pass
 	def compose_clear_button_click() : 
@@ -82,7 +93,8 @@ class mainWindow (QtGui.QMainWindow):
 		self.ui.inbox_subject_lineEdit.setText(self.mails[mailNumber].subject)
 		self.ui.inbox_body_textEdit.setText(self.mails[mailNumber].body)
 		self.ui.inbox_to_lineEdit.setText(self.mails[mailNumber].to)
-	def show_error_mbox(title , message) : 
+
+	def show_error_mbox(self ,title , message) : 
 		'''
 		it's show message box with given title and message 
 		'''
@@ -100,16 +112,16 @@ class mainWindow (QtGui.QMainWindow):
 		pop.connect(self.Config['pop3Server'] , 110) 
 		response = pop.user(self.Config['pop3User'])
 		if not pop.checkStatus(response) : 
-			show_error_mbox('pop3 error' , response.decode()) 
+			self.show_error_mbox('pop3 error' , response.decode()) 
 			return None
 		# authentication with pop3 server using basic protocol user and pass command's
 		response = pop.pass_(self.Config['pop3Pass'])
 		if not pop.checkStatus(response) : 
-			show_error_mbox('pop3 error' , response.decode()) 
+			self.show_error_mbox('pop3 error' , response.decode()) 
 			return None
 		response = pop.uidl()
 		if not pop.checkStatus(response) : 
-			show_error_mbox('pop3 error' , response.decode()) 
+			self.show_error_mbox('pop3 error' , response.decode()) 
 			return None
 		# getting list of uidl's (message's and uidl code's)
 		self.uidl = pop3parser.uidl(response.decode())
@@ -127,3 +139,44 @@ class mainWindow (QtGui.QMainWindow):
 		self.ui.inbox_subject_lineEdit.setText("")
 		self.ui.inbox_body_textEdit.setText("")
 		self.ui.inbox_to_lineEdit.setText("")
+	def remove_mail_from_pop3_inbox(self, mailUidl):
+		'''
+		it is function for removing mail from pop3 mailbox 
+		'''
+		pop = pop3()
+		# start connection to pop3 server 
+		pop.connect(self.Config['pop3Server'] , 110) 
+		response = pop.user(self.Config['pop3User'])
+		if not self.pop3_Response_check(response) :
+			return False
+		# authentication with pop3 server using basic protocol user and pass command's
+		response = pop.pass_(self.Config['pop3Pass'])
+		if not self.pop3_Response_check(response) :
+			return False
+		response = pop.uidl()
+		if not self.pop3_Response_check(response) :
+			return False
+		# getting list of uidl's (message's and uidl code's)
+		uidls = pop3parser.uidl(response.decode())
+		targetMailNumber = -1 
+		for number , uidl in uidls : 
+			if uidl == mailUidl : 
+				targetMailNumber = number
+				break
+		if targetMailNumber == -1 : 
+			self.show_error_mbox('mail not found', "Cannot find selected mail in server mailbox .")
+			return False
+		response = pop.dele(targetMailNumber)
+		if not self.pop3_Response_check(response) :
+			return False
+		esponse = pop.quit()
+		if not self.pop3_Response_check(response) :
+			return False
+		pop.close()
+		return True
+	def pop3_Response_check(self , response):
+		if not response[0] == 43 : 
+			self.show_error_mbox('pop3 error' , response.decode()) 
+			return False
+		else :
+			return True 
