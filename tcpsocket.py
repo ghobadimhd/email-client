@@ -75,7 +75,7 @@ class pop3():
 			return status 
 	def dele(self ,msg):
 		cmd = b'dele ' + str(msg).encode()
-		self.ts.send()
+		self.ts.send(cmd)
 		return self.ts.recvSingleLine()
 	def noop(self ):
 		self.ts.send('noop'.encode())
@@ -113,7 +113,6 @@ class pop3():
 		if msg != None  :
 			string = data.decode() 
 			index = string.find("\r\n")
-			print('index : ' , index)
 			msg.clear()
 			msg.append(string[1:index])
 		return status 
