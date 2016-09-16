@@ -49,8 +49,20 @@ class mainWindow (QtGui.QMainWindow):
 		for  param in keyValue : 
 			config[param[0]] = param[1]
 		self.Config= config
-	def inbox_refresh_button_click():
-		pass 
+
+
+	def inbox_refresh_button_click(self):
+		'''
+		it is get mail's from pop3 and fill the list 
+		'''
+		self.getMails()
+		items = QtGui.QStandardItemModel() 
+		
+		for item in self.mails.keys() : 
+			items.appendRow([QtGui.QStandardItem(str(item)+ ' - ' + self.mails[item].from_ + \
+			 ' - ' +self.mails[item].subject)])
+		self.ui.inbox_mails_listView.setModel(items)
+
 	def inbox_remove_button_click() :
 		pass
 	def compose_send_button_click() : 
@@ -59,4 +71,35 @@ class mainWindow (QtGui.QMainWindow):
 		pass
 	def inbox_listView_click(qModelIndex) : 
 		pass 
-
+	def show_error_mbox(title , message) : 
+		mbox = QtGui.QMessageBox()
+		mbox.setWindowTitle(title) 
+		mbox.setText(message) 
+		mbox.exec_()
+	def getMails(self) :
+		pop = pop3()
+		# start connection to pop3 server 
+		pop.connect(self.Config['pop3Server'] , 110) 
+		response = pop.user(self.Config['pop3User'])
+		if not pop.checkStatus(response) : 
+			show_error_mbox('pop3 error' , response.decode()) 
+			return None
+		# authentication with pop3 server using basic protocol user and pass command's
+		response = pop.pass_(self.Config['pop3Pass'])
+		if not pop.checkStatus(response) : 
+			show_error_mbox('pop3 error' , response.decode()) 
+			return None
+		response = pop.uidl()
+		if not pop.checkStatus(response) : 
+			show_error_mbox('pop3 error' , response.decode()) 
+			return None
+		# getting list of uidl's (message's and uidl code's)
+		self.uidl = pop3parser.uidl(response.decode())
+		self.mails = {}
+		# get's mail content's by list of uidl's 
+		for entry in self.uidl : 
+			response = pop.retr(entry[0])
+			if pop.checkStatus(response) :
+				mail =  Mail( pop3parser.retr(response.decode()) ) 
+				mail.uidl= entry[1]
+				self.mails[entry[0]] = mail
