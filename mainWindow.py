@@ -1,20 +1,40 @@
 import mainWindowUi
 import re
+import sys
+import socket
+from tcpsocket import pop3
+from parser import pop3parser , mail as Mail
+from PyQt4 import QtGui , QtCore
 settingPath = '.setting'
-from PyQt4 import QtGui
+
 class mainWindow (QtGui.QMainWindow): 
 	def __init__(self) : 
 		QtGui.QMainWindow.__init__(self)
-		ui = mainWindowUi.Ui_MainWindow()
-		ui.setupUi(self) 
+		self.ui = mainWindowUi.Ui_MainWindow()
+		self.ui.setupUi(self) 
 		self.initialize()
 	def initialize(self): 
+		self.Config = {}
 		self.readSetting()
-		#check smtp and pop3 config for exitance and send if not 
-		#resolve  ip of smtp and pop3 and add to config 
-		# check for user and password 
-		pass
-		
+		#check smtp and pop3 config for exitance and send if not
+		if self.Config.get('smtpServer') is None or self.Config.get('pop3Server') is None :
+			mbox = QtGui.QMessageBox()
+			mbox.setWindowTitle("cannot find server's")
+			mbox.setText("There is no smtp/pop3 server .\nPlease add smtp/pop3 server to config file (.setting) and rerun the Program.")
+			mbox.exec_()
+			sys.exit()
+ 		#resolve pop3 and smtp hostname to ip 
+		self.Config['smtpIp'] = socket.gethostbyname(self.Config['smtpServer'])
+		self.Config['pop3Ip'] = socket.gethostbyname(self.Config['pop3Server'])
+		#check pop3 username and password 
+		if self.Config.get('pop3User') is None or self.Config.get('pop3Pass') is None :
+			mbox = QtGui.QMessageBox()
+			mbox.setWindowTitle("cannot find username/password for pop3 ")
+			mbox.setText("There is no username/password .\nPlease add username/password to config file (.setting) and rerun the Program.")
+			mbox.exec_()
+			sys.exit() 
+
+
 	def readSetting(self) : 
 		global settingPath
 		with open(settingPath , 'r') as file : 
