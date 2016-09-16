@@ -27,8 +27,8 @@ class tcpsocket :
 		while data[-5:] != b"\r\n.\r\n" and (len(data) != 3 and data != b".\r\n" ) : # if data not ended with CRLF.CRLF then get remaining 
 			data = data + self.sock.recv(chunk) 
 		return data 
-	def close() : 
-		sock.close()
+	def close(self) : 
+		self.sock.close()
 
 
 class pop3():
@@ -93,7 +93,7 @@ class pop3():
 		else : 
 			return status 
 		self.ts.recvMultiLine()
-	def close(self ,):
+	def close(self ):
 		self.ts.close() 
 	def uidl(self , msg=None):
 		if msg == None : 
