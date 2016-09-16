@@ -70,8 +70,17 @@ class mainWindow (QtGui.QMainWindow):
 		pass
 	def compose_clear_button_click() : 
 		pass
-	def inbox_listView_click(qModelIndex) : 
-		pass 
+	def inbox_listView_click(self ,qModelIndex) : 
+		'''
+		show content of selected mail in TextBox's 
+		'''
+		mailNumber = qModelIndex.row() + 1 
+		self.Clear_inbox_fields()
+
+		self.ui.inbox_from_lineEdit.setText(self.mails[mailNumber].from_)
+		self.ui.inbox_subject_lineEdit.setText(self.mails[mailNumber].subject)
+		self.ui.inbox_body_textEdit.setText(self.mails[mailNumber].body)
+		self.ui.inbox_to_lineEdit.setText(self.mails[mailNumber].to)
 	def show_error_mbox(title , message) : 
 		'''
 		it's show message box with given title and message 
@@ -84,7 +93,6 @@ class mainWindow (QtGui.QMainWindow):
 		'''
 		this method get mail's from pop3 server and save it in self.mails and self.uidl
 		self.mail structre is : [MailNumber(int) , Mail(Mail)]
-
 		'''
 		pop = pop3()
 		# start connection to pop3 server 
@@ -112,3 +120,9 @@ class mainWindow (QtGui.QMainWindow):
 				mail =  Mail( pop3parser.retr(response.decode()) ) 
 				mail.uidl= entry[1] # save mail uidl in mail object 
 				self.mails[entry[0]] = mail
+		pop.close()
+	def Clear_inbox_fields(self):
+		self.ui.inbox_from_lineEdit.setText("")
+		self.ui.inbox_subject_lineEdit.setText("")
+		self.ui.inbox_body_textEdit.setText("")
+		self.ui.inbox_to_lineEdit.setText("")
