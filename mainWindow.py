@@ -55,6 +55,7 @@ class mainWindow (QtGui.QMainWindow):
 		'''
 		it is get mail's from pop3 and fill the list 
 		'''
+		self.Clear_inbox_fields()
 		self.getMails()
 		items = QtGui.QStandardItemModel() 
 		
