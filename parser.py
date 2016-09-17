@@ -1,8 +1,8 @@
 import re 
 class mail  :
-    def __init__(self , mailParts:dict):
-        self.__dict__.update(mailParts)
-        
+    def __init__(self , mailParts:dict=None):
+        if not mailParts == None :
+            self.__dict__.update(mailParts)
 
 class pop3parser : 
     '''
