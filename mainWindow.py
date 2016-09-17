@@ -78,10 +78,13 @@ class mainWindow (QtGui.QMainWindow):
 				self.inbox_refresh_button_click()
 		else : 
 			self.show_error_mbox('select mail', 'Please select a mail from list')
-	def compose_send_button_click() : 
+	def compose_send_button_click(self) : 
 		pass
-	def compose_clear_button_click() : 
-		pass
+	def compose_clear_button_click(self) : 
+		self.ui.compose_from_lineEdit.setText("")
+		self.ui.compose_to_lineEdit.setText("")
+		self.ui.compose_subject_lineEdit.setText("") 
+		self.ui.compose_body_textEdit.setText("")
 	def inbox_listView_click(self ,qModelIndex) : 
 		'''
 		show content of selected mail in TextBox's 
