@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainWindow.ui'
 #
-# Created: Sat Sep 17 13:23:58 2016
+# Created: Sat Sep 17 13:40:50 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -56,17 +56,17 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.addLayout(self.horizontalLayout_5)
         self.horizontalLayout_3 = QtGui.QHBoxLayout()
         self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
-        self.inbox_mails_tableView = QtGui.QTableView(self.tab1)
+        self.inbox_mails_listView = QtGui.QListView(self.tab1)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.inbox_mails_tableView.sizePolicy().hasHeightForWidth())
-        self.inbox_mails_tableView.setSizePolicy(sizePolicy)
-        self.inbox_mails_tableView.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.inbox_mails_tableView.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-        self.inbox_mails_tableView.setTextElideMode(QtCore.Qt.ElideLeft)
-        self.inbox_mails_tableView.setObjectName(_fromUtf8("inbox_mails_tableView"))
-        self.horizontalLayout_3.addWidget(self.inbox_mails_tableView)
+        sizePolicy.setHeightForWidth(self.inbox_mails_listView.sizePolicy().hasHeightForWidth())
+        self.inbox_mails_listView.setSizePolicy(sizePolicy)
+        self.inbox_mails_listView.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        self.inbox_mails_listView.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        self.inbox_mails_listView.setTextElideMode(QtCore.Qt.ElideLeft)
+        self.inbox_mails_listView.setObjectName(_fromUtf8("inbox_mails_listView"))
+        self.horizontalLayout_3.addWidget(self.inbox_mails_listView)
         self.verticalLayout_8 = QtGui.QVBoxLayout()
         self.verticalLayout_8.setObjectName(_fromUtf8("verticalLayout_8"))
         self.horizontalLayout_6 = QtGui.QHBoxLayout()
@@ -192,12 +192,12 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuAlskgh.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QObject.connect(self.inbox_refresh_button, QtCore.SIGNAL(_fromUtf8("clicked()")), MainWindow.inbox_refresh_button_click)
         QtCore.QObject.connect(self.inbox_remove_button, QtCore.SIGNAL(_fromUtf8("clicked()")), MainWindow.inbox_remove_button_click)
         QtCore.QObject.connect(self.compose_send_button, QtCore.SIGNAL(_fromUtf8("clicked()")), MainWindow.compose_send_button_click)
         QtCore.QObject.connect(self.compose_clear_button, QtCore.SIGNAL(_fromUtf8("clicked()")), MainWindow.compose_clear_button_click)
-        QtCore.QObject.connect(self.inbox_mails_tableView, QtCore.SIGNAL(_fromUtf8("clicked(QModelIndex)")), MainWindow.inbox_listView_click)
+        QtCore.QObject.connect(self.inbox_mails_listView, QtCore.SIGNAL(_fromUtf8("clicked(QModelIndex)")), MainWindow.inbox_listView_click)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.compose_from_lineEdit, self.compose_to_lineEdit)
         MainWindow.setTabOrder(self.compose_to_lineEdit, self.compose_subject_lineEdit)
@@ -206,8 +206,8 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.compose_send_button, self.compose_clear_button)
         MainWindow.setTabOrder(self.compose_clear_button, self.tabWidget)
         MainWindow.setTabOrder(self.tabWidget, self.inbox_body_textEdit)
-        MainWindow.setTabOrder(self.inbox_body_textEdit, self.inbox_mails_tableView)
-        MainWindow.setTabOrder(self.inbox_mails_tableView, self.inbox_from_lineEdit)
+        MainWindow.setTabOrder(self.inbox_body_textEdit, self.inbox_mails_listView)
+        MainWindow.setTabOrder(self.inbox_mails_listView, self.inbox_from_lineEdit)
         MainWindow.setTabOrder(self.inbox_from_lineEdit, self.inbox_to_lineEdit)
         MainWindow.setTabOrder(self.inbox_to_lineEdit, self.inbox_subject_lineEdit)
         MainWindow.setTabOrder(self.inbox_subject_lineEdit, self.inbox_refresh_button)
