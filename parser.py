@@ -12,7 +12,6 @@ class pop3parser :
     def list(listInput:str):
         regex = re.compile("([0-9]+) ([0-9]+)")
         matchList = regex.findall(listInput)
-        print(matchList)
         # convert string's to number 
         output = [] 
         for record  in matchList : 
@@ -26,7 +25,6 @@ class pop3parser :
     def uidl(uidlInput:str):
         regex = re.compile("([0-9]+) (.+)\r\n")
         matchList = regex.findall(uidlInput)
-        print(matchList)
         # convert string's to number 
         output = [] 
         for record  in matchList : 
