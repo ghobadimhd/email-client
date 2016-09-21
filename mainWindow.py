@@ -224,7 +224,6 @@ class mainWindow (QtGui.QMainWindow):
 
 
 	def smtp_response_check(self , response):
-		print(response)
 		if  not (response[0] == 50 or  response[0] == 51 ): 
 			self.show_error_mbox('smtp error' , response.decode()) 
 			return False
