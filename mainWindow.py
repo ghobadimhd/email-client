@@ -203,6 +203,10 @@ class mainWindow (QtGui.QMainWindow):
 		response = Smtp.connect(self.Config['smtpIp'] , 25) 
 		if not self.smtp_response_check(response) : 
 			return False
+		if self.Config.get('smtpUser') and self.Config.get('smtpPass') :
+			response = Smtp.authPlain(self.Config['smtpUser'], self.Config['smtpPass']) 
+			if not self.smtp_response_check(response) : 
+				return False
 		response = Smtp.mailFrom(mail.from_) 
 		if not self.smtp_response_check(response) : 
 			return False
