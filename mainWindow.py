@@ -5,6 +5,7 @@ import socket
 from tcpsocket import pop3
 from parser import pop3parser , mail as Mail
 from PyQt4 import QtGui , QtCore
+from smtp import smtp
 settingPath = '.setting'
 
 class mainWindow (QtGui.QMainWindow): 
@@ -79,7 +80,18 @@ class mainWindow (QtGui.QMainWindow):
 		else : 
 			self.show_error_mbox('select mail', 'Please select a mail from list')
 	def compose_send_button_click(self) : 
-		pass
+		'''
+		it send mail through the smtp server 
+		'''
+		mail = Mail()
+		mail.from_ = self.ui.compose_from_lineEdit.text()
+		mail.to = self.ui.compose_to_lineEdit.text()
+		mail.subject = self.ui.compose_subject_lineEdit.text() 
+		mail.body = self.ui.compose_body_textEdit.toPlainText()
+		ok = self.send_mail(mail)
+		if ok : 
+			#clear form 
+			self.compose_clear_button_click()
 	def compose_clear_button_click(self) : 
 		self.ui.compose_from_lineEdit.setText("")
 		self.ui.compose_to_lineEdit.setText("")
@@ -183,3 +195,39 @@ class mainWindow (QtGui.QMainWindow):
 			return False
 		else :
 			return True 
+	def send_mail(self, mail ):
+		'''
+		it connect to smtp server and send mail 
+		'''
+		Smtp = smtp()
+		response = Smtp.connect(self.Config['smtpIp'] , 25) 
+		if not self.smtp_response_check(response) : 
+			return False
+		response = Smtp.mailFrom(mail.from_) 
+		if not self.smtp_response_check(response) : 
+			return False
+		response = Smtp.rcptTo([mail.to]) 
+		for r in response.keys() :
+			if not self.smtp_response_check(response[r]) : 
+				return False
+		content = "From: {}\r\nTo: {}\r\nSubject: {}\r\n\r\n{}"\
+			.format(mail.from_ , mail.to , mail.subject , mail.body) # this should implemented in Mail class
+		content.replace("\r\n.\r\n", "\r\n..\r\n")
+		response = Smtp.data(content) 
+		for r in response:
+			if not self.smtp_response_check(r) : 
+				return False
+		response = Smtp.quit() 
+		if not self.smtp_response_check(response) : 
+			return False
+		return True
+
+
+	def smtp_response_check(self , response):
+		print(response)
+		if  not (response[0] == 50 or  response[0] == 51 ): 
+			self.show_error_mbox('smtp error' , response.decode()) 
+			return False
+		else :
+			return True 
+
