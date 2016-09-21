@@ -1,4 +1,5 @@
 import tcpsocket
+import base64
 class smtp: 
 	def __init__(self):
 		self.ts = tcpsocket.tcpsocket()
@@ -36,3 +37,10 @@ class smtp:
 		cmd =b'quit'
 		self.ts.send(cmd)
 		return self.ts.recvSingleLine()
+	def authPlain(self,username,password):
+		#fix me : it should check user pass type and throw exception if it's needed 
+		AuthString = '\x00{}\x00{}'.format(username, password).encode()
+		base64AuthString = base64.b64encode(AuthString)
+		cmd = b'AUTH PLAIN ' + base64AuthString
+		self.ts.send(cmd)
+		return self.ts.recvSingleLine() 
