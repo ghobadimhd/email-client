@@ -2,11 +2,14 @@ import mainWindowUi
 import re
 import sys
 import socket
-from tcpsocket import pop3
 from parser import pop3parser , mail as Mail
 from PyQt4 import QtGui , QtCore
 from smtp import smtp
+from pop3 import pop3 
+
+
 settingPath = '.setting'
+
 
 class mainWindow (QtGui.QMainWindow): 
 	def __init__(self) : 
