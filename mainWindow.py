@@ -65,8 +65,8 @@ class mainWindow (QtGui.QMainWindow):
 		
 		for item in self.mails.keys() : 
 			items.appendRow([QtGui.QStandardItem(str(item)+ ' - ' \
-				+ self.mails[item].from_ \
-				+ ' - ' +self.mails[item].subject)])
+				+ self.mails[item].header.From \
+				+ ' - ' +self.mails[item].header.Subject)])
 		self.ui.inbox_mails_listView.setModel(items)
 
 	def inbox_remove_button_click(self) :
@@ -87,9 +87,9 @@ class mainWindow (QtGui.QMainWindow):
 		it send mail through the smtp server 
 		'''
 		mail = Mail()
-		mail.from_ = self.ui.compose_from_lineEdit.text()
-		mail.to = self.ui.compose_to_lineEdit.text()
-		mail.subject = self.ui.compose_subject_lineEdit.text() 
+		mail.header.From = self.ui.compose_from_lineEdit.text()
+		mail.header.To = self.ui.compose_to_lineEdit.text()
+		mail.header.Subject = self.ui.compose_subject_lineEdit.text() 
 		mail.body = self.ui.compose_body_textEdit.toPlainText()
 		ok = self.send_mail(mail)
 		if ok : 
@@ -107,10 +107,10 @@ class mainWindow (QtGui.QMainWindow):
 		mailNumber = qModelIndex.row() + 1 
 		self.Clear_inbox_fields()
 
-		self.ui.inbox_from_lineEdit.setText(self.mails[mailNumber].from_)
-		self.ui.inbox_subject_lineEdit.setText(self.mails[mailNumber].subject)
+		self.ui.inbox_from_lineEdit.setText(self.mails[mailNumber].header.From)
+		self.ui.inbox_subject_lineEdit.setText(self.mails[mailNumber].header.Subject)
 		self.ui.inbox_body_textEdit.setText(self.mails[mailNumber].body)
-		self.ui.inbox_to_lineEdit.setText(self.mails[mailNumber].to)
+		self.ui.inbox_to_lineEdit.setText(self.mails[mailNumber].header.To)
 
 	def show_error_mbox(self ,title , message) : 
 		'''
@@ -148,7 +148,7 @@ class mainWindow (QtGui.QMainWindow):
 		for entry in self.uidl : 
 			response = pop.retr(entry[0]) # retrive mail (enttry[0] is mail number from uidl list)
 			if pop.checkStatus(response) :
-				mail =  Mail( pop3parser.retr(response.decode()) ) 
+				mail =   pop3parser.retr(response.decode())
 				mail.uidl= entry[1] # save mail uidl in mail object 
 				self.mails[entry[0]] = mail
 		pop.close()
@@ -210,15 +210,15 @@ class mainWindow (QtGui.QMainWindow):
 			response = Smtp.authPlain(self.Config['smtpUser'], self.Config['smtpPass']) 
 			if not self.smtp_response_check(response) : 
 				return False
-		response = Smtp.mailFrom(mail.from_) 
+		response = Smtp.mailFrom(mail.header.From) 
 		if not self.smtp_response_check(response) : 
 			return False
-		response = Smtp.rcptTo([mail.to]) 
+		response = Smtp.rcptTo([mail.header.To]) 
 		for r in response.keys() :
 			if not self.smtp_response_check(response[r]) : 
 				return False
 		content = "From: {}\r\nTo: {}\r\nSubject: {}\r\n\r\n{}"\
-			.format(mail.from_ , mail.to , mail.subject , mail.body) # this should implemented in Mail class
+			.format(mail.header.From , mail.header.To , mail.header.Subject , mail.body) # this should implemented in Mail class
 		content.replace("\r\n.\r\n", "\r\n..\r\n")
 		response = Smtp.data(content) 
 		for r in response:

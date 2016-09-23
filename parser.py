@@ -1,8 +1,45 @@
 import re 
-class mail  :
-    def __init__(self , mailParts:dict=None):
-        if not mailParts == None :
-            self.__dict__.update(mailParts)
+
+
+class mail(object):
+    """this class represent a mail """
+
+    class mailHeader(object):
+        """represent header of a mail """
+        def __init__(self, headerDict=None):
+            if type(headerDict) is dict :
+                self.__dict__.update(headerDict)
+
+    def __init__(self,  rawMail=None):
+        if type(rawMail) is bytes : 
+            rawMail = rawMail.decode()
+        if type(rawMail) is str : 
+            headerSection = mail.findHeader(rawMail)
+            self.header = mail.mailHeader(mail.parseHeaders(headerSection)) 
+            self.body = mail.findBody(rawMail) 
+        elif rawMail is None : 
+            self.header = mail.mailHeader() 
+            self.body = "" 
+
+
+    def parseHeaders(headerString):
+        """it parse raw header string to dictionary """
+        # add exception to check headerString type (it should be string)
+        headerPattern = '(.*): (.*(?:(?:\r\n\s.*)*))\r\n'
+        regex = re.compile(headerPattern , re.I) 
+        headers =  regex.findall(headerString)
+        return dict(headers ) 
+
+    def findBody(rawMail):
+        # add exception to check mail type should be str
+        index = rawMail.find('\r\n\r\n') # header and body seprated with two \r\n
+        return rawMail[index+4:]
+
+    def findHeader(rawMail):
+        # add exception to check mail type should be str
+        index = rawMail.find('\r\n\r\n') # header and body seprated with two \r\n
+        return rawMail[:index+2]
+
 
 class pop3parser : 
     '''
@@ -31,26 +68,5 @@ class pop3parser :
             output.append((int(record[0]) , record[1])) 
         return   output
     def retr(retrInput:str): 
-        pattern = {'from_':'\r\nfrom: (.*)\r\n' , 
-        'to':'\r\nto: *(.*)\r\n' , 
-        'cc':'^\r\ncc: (.*)\r\n' , 
-        'replay-to':'\r\nreplay-to: (.*)\r\n' , 
-        'date':'\r\ndate: (.*)\r\n' , 
-        'content-type':'\r\ncontent-type: (.*)\r\n' , 
-        'message-id':'\r\nmessage-id: (.*)\r\n' , 
-        'mime-version':'\r\nmime-version: (.*)\r\n' , 
-        'return-path':'\r\nreturn-path: (.*)\r\n' , 
-        'user-agent':'\r\nuser-agent: (.*)\r\n' , 
-        'delivered-to':'\r\ndelivered-to: (.*)\r\n' , 
-        'x-mailer':'\r\nx-mailer: (.*)\r\n' ,
-        'subject':'\r\nsubject: (.*)\r\n'
-        }
-        mail = {}
-        for data in pattern.keys() : 
-            regex = re.compile(pattern[data], re.I )
-            match = regex.findall(retrInput)
-            if len(match) > 0 : 
-                mail[data] = match[0]
-        bodyStartIndex = retrInput.find("\r\n\r\n")
-        mail['body'] = retrInput[bodyStartIndex+4:]
-        return mail 
+        
+        return mail(retrInput)
