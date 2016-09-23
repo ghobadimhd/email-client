@@ -1,0 +1,12 @@
+#!/usr/bin/python3
+from PyQt4 import QtGui
+from mainWindow import mainWindow
+
+def main():
+	app = QtGui.QApplication([])
+	mainWindow1 = mainWindow()
+	mainWindow1.show() 
+	app.exec_()
+
+if __name__ == '__main__' : 
+	main() 
