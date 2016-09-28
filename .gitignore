@@ -1,0 +1,5 @@
+*.txt
+*.odt
+tester.py
+.setting
+__pycache__
