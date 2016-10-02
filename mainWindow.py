@@ -1,239 +1,259 @@
-import mainWindowUi
 import re
 import sys
 import socket
-from parser import pop3parser , mail as Mail
-from PyQt4 import QtGui , QtCore
-from smtp import smtp
-from pop3 import pop3 
+from parser import Pop3Parser, Mail
+from PyQt4 import QtGui
+from smtp import Smtp
+from pop3 import Pop3
+import mainWindowUi
 
 
-settingPath = '.setting'
+class MainWindow(QtGui.QMainWindow):
+    def __init__(self):
+        QtGui.QMainWindow.__init__(self)
+        self.config = {}
+        self.mails = []
+        self.uidl = []
+        self.setting_path = '.setting'
+
+        self.ui = mainWindowUi.Ui_MainWindow()
+        self.ui.setupUi(self)
+        self.initialize()
+    def initialize(self):
+        self.read_setting(self.setting_path)
+        #check smtp and pop3 config for exitance and send if not
+        if (self.config.get('smtpServer') is None or
+                self.config.get('pop3Server') is None):
+            mbox = QtGui.QMessageBox()
+            mbox.setWindowTitle("cannot find server's")
+            mbox.setText("There is no smtp/pop3 server .\n"
+                         "Please add smtp/pop3 server to config file"
+                         " (.setting) and rerun the Program.")
+            mbox.exec_()
+            sys.exit()
+        #resolve pop3 and smtp hostname to ip
+        self.config['smtpIp'] = socket.gethostbyname(self.config['smtpServer'])
+        self.config['pop3Ip'] = socket.gethostbyname(self.config['pop3Server'])
+        #check pop3 username and password
+        if (self.config.get('pop3User') is None
+                or self.config.get('pop3Pass') is None):
+            mbox = QtGui.QMessageBox()
+            mbox.setWindowTitle("cannot find username/password for pop3 ")
+            mbox.setText("There is no username/password .\n"
+                         "Please add username/password to config file "
+                         "(.setting) and rerun the Program.")
+            mbox.exec_()
+            sys.exit()
 
 
-class mainWindow (QtGui.QMainWindow): 
-	def __init__(self) : 
-		QtGui.QMainWindow.__init__(self)
-		self.ui = mainWindowUi.Ui_MainWindow()
-		self.ui.setupUi(self) 
-		self.initialize()
-	def initialize(self): 
-		self.Config = {}
-		self.readSetting()
-		#check smtp and pop3 config for exitance and send if not
-		if self.Config.get('smtpServer') is None or self.Config.get('pop3Server') is None :
-			mbox = QtGui.QMessageBox()
-			mbox.setWindowTitle("cannot find server's")
-			mbox.setText("There is no smtp/pop3 server .\nPlease add smtp/pop3 server to config file (.setting) and rerun the Program.")
-			mbox.exec_()
-			sys.exit()
- 		#resolve pop3 and smtp hostname to ip 
-		self.Config['smtpIp'] = socket.gethostbyname(self.Config['smtpServer'])
-		self.Config['pop3Ip'] = socket.gethostbyname(self.Config['pop3Server'])
-		#check pop3 username and password 
-		if self.Config.get('pop3User') is None or self.Config.get('pop3Pass') is None :
-			mbox = QtGui.QMessageBox()
-			mbox.setWindowTitle("cannot find username/password for pop3 ")
-			mbox.setText("There is no username/password .\nPlease add username/password to config file (.setting) and rerun the Program.")
-			mbox.exec_()
-			sys.exit() 
+    def read_setting(self, setting_path):
+        """read client setting from file"""
+        with open(setting_path, 'r') as config_file:
+            temp = config_file.readlines()
+            setting = ''
+            for line in temp:
+                setting = setting + line
+            del temp
+        regex = re.compile('(.*):(.*)')
+        key_value = regex.findall(setting)
+        config = {}
+        for  param in key_value:
+            config[param[0]] = param[1]
+        self.config = config
 
 
-	def readSetting(self) : 
-		global settingPath
-		with open(settingPath , 'r') as file : 
-			temp = file.readlines()
-			setting = ''
-			for line in temp :
-				setting = setting + line 
-			del temp  
-		regex = re.compile('(.*):(.*)')
-		keyValue = regex.findall(setting)
-		config = {}
-		for  param in keyValue : 
-			config[param[0]] = param[1]
-		self.Config= config
+    def inbox_refresh_button_click(self):
+        '''
+        it is get mail's from pop3 and fill the list
+        '''
+        self.clear_inbox_fields()
+        self.get_mails()
+        items = QtGui.QStandardItemModel()
+        for item in self.mails:
+            items.appendRow([QtGui.QStandardItem(str(item)+ ' - ' \
+                + self.mails[item].header.From \
+                + ' - ' +self.mails[item].header.Subject)])
+        self.ui.inbox_mails_listView.setModel(items)
 
+    def inbox_remove_button_click(self):
+        '''
+        remove mail from inbox
+        '''
+        list_view_model = self.ui.inbox_mails_listView.selectionModel()
+        selected_items = list_view_model.selectedIndexes()
+        if selected_items:
+            mail_number = list_view_model.selectedIndexes()[0].row() + 1
+            mail_uidl = self.mails[mail_number].uidl
+            if self.remove_mail_from_pop3_inbox(mail_uidl):
+                #Refresh list
+                self.inbox_refresh_button_click()
+        else:
+            self.show_error_mbox("select mail",
+                                 "Please select a mail from list")
+    def compose_send_button_click(self):
+        '''
+        it send mail through the smtp server
+        '''
+        mail = Mail()
+        mail.header.From = self.ui.compose_from_lineEdit.text()
+        mail.header.To = self.ui.compose_to_lineEdit.text()
+        mail.header.Subject = self.ui.compose_subject_lineEdit.text()
+        mail.body = self.ui.compose_body_textEdit.toPlainText()
+        is_ok = self.send_mail(mail)
+        if is_ok:
+            self.compose_clear_button_click() #clear form
+    def compose_clear_button_click(self):
+        self.ui.compose_from_lineEdit.setText("")
+        self.ui.compose_to_lineEdit.setText("")
+        self.ui.compose_subject_lineEdit.setText("")
+        self.ui.compose_body_textEdit.setText("")
+    def inbox_listview_click(self, qmodel_index):
+        '''
+        show content of selected mail in TextBox's
+        '''
+        mail_number = qmodel_index.row() + 1
+        self.clear_inbox_fields()
 
-	def inbox_refresh_button_click(self):
-		'''
-		it is get mail's from pop3 and fill the list 
-		'''
-		self.Clear_inbox_fields()
-		self.getMails()
-		items = QtGui.QStandardItemModel() 
-		
-		for item in self.mails.keys() : 
-			items.appendRow([QtGui.QStandardItem(str(item)+ ' - ' \
-				+ self.mails[item].header.From \
-				+ ' - ' +self.mails[item].header.Subject)])
-		self.ui.inbox_mails_listView.setModel(items)
+        self.ui.inbox_from_lineEdit.setText(self.mails[mail_number].header.From)
+        self.ui.inbox_subject_lineEdit.setText(self.mails[mail_number].header.Subject)
+        self.ui.inbox_body_textEdit.setText(self.mails[mail_number].body)
+        self.ui.inbox_to_lineEdit.setText(self.mails[mail_number].header.To)
 
-	def inbox_remove_button_click(self) :
-		'''
-		remove mail from inbox 
-		'''
-		selectedItems = self.ui.inbox_mails_listView.selectionModel().selectedIndexes()
-		if selectedItems :
-			mailNumber = self.ui.inbox_mails_listView.selectionModel().selectedIndexes()[0].row() + 1 
-			mailUidl = self.mails[mailNumber].uidl
-			if self.remove_mail_from_pop3_inbox(mailUidl):
-				#Refresh list 
-				self.inbox_refresh_button_click()
-		else : 
-			self.show_error_mbox('select mail', 'Please select a mail from list')
-	def compose_send_button_click(self) : 
-		'''
-		it send mail through the smtp server 
-		'''
-		mail = Mail()
-		mail.header.From = self.ui.compose_from_lineEdit.text()
-		mail.header.To = self.ui.compose_to_lineEdit.text()
-		mail.header.Subject = self.ui.compose_subject_lineEdit.text() 
-		mail.body = self.ui.compose_body_textEdit.toPlainText()
-		ok = self.send_mail(mail)
-		if ok : 
-			#clear form 
-			self.compose_clear_button_click()
-	def compose_clear_button_click(self) : 
-		self.ui.compose_from_lineEdit.setText("")
-		self.ui.compose_to_lineEdit.setText("")
-		self.ui.compose_subject_lineEdit.setText("") 
-		self.ui.compose_body_textEdit.setText("")
-	def inbox_listView_click(self ,qModelIndex) : 
-		'''
-		show content of selected mail in TextBox's 
-		'''
-		mailNumber = qModelIndex.row() + 1 
-		self.Clear_inbox_fields()
+    def show_error_mbox(self, title, message):
+        '''
+        it's show message box with given title and message
+        '''
+        mbox = QtGui.QMessageBox()
+        mbox.setWindowTitle(title)
+        mbox.setText(message)
+        mbox.exec_()
+    def get_mails(self):
+        '''
+        this method get mail's from pop3 server
+        and save it in self.mails and self.uidl
+        self.mail structre is: [MailNumber(int), Mail(Mail)]
+        '''
+        pop = Pop3()
+        # start connection to pop3 server
+        pop.connect(self.config['pop3Server'], 110)
+        response = pop.user(self.config['pop3User'])
+        if not pop.check_status(response):
+            self.show_error_mbox('pop3 error', response.decode())
+            return None
+        # authentication with pop3 server
+        #using basic protocol user and pass command's
+        response = pop.pass_(self.config['pop3Pass'])
+        if not pop.check_status(response):
+            self.show_error_mbox('pop3 error', response.decode())
+            return None
+        response = pop.uidl()
+        if not pop.check_status(response):
+            self.show_error_mbox('pop3 error', response.decode())
+            return None
+        # getting list of uidl's (message's and uidl code's)
+        self.uidl = Pop3Parser.uidl(response.decode())
+        self.mails = {}
 
-		self.ui.inbox_from_lineEdit.setText(self.mails[mailNumber].header.From)
-		self.ui.inbox_subject_lineEdit.setText(self.mails[mailNumber].header.Subject)
-		self.ui.inbox_body_textEdit.setText(self.mails[mailNumber].body)
-		self.ui.inbox_to_lineEdit.setText(self.mails[mailNumber].header.To)
+        # get's mail content's by list of uidl's
+        # enttry[0] is mail number from uidl list
 
-	def show_error_mbox(self ,title , message) : 
-		'''
-		it's show message box with given title and message 
-		'''
-		mbox = QtGui.QMessageBox()
-		mbox.setWindowTitle(title) 
-		mbox.setText(message) 
-		mbox.exec_()
-	def getMails(self) :
-		'''
-		this method get mail's from pop3 server and save it in self.mails and self.uidl
-		self.mail structre is : [MailNumber(int) , Mail(Mail)]
-		'''
-		pop = pop3()
-		# start connection to pop3 server 
-		pop.connect(self.Config['pop3Server'] , 110) 
-		response = pop.user(self.Config['pop3User'])
-		if not pop.checkStatus(response) : 
-			self.show_error_mbox('pop3 error' , response.decode()) 
-			return None
-		# authentication with pop3 server using basic protocol user and pass command's
-		response = pop.pass_(self.Config['pop3Pass'])
-		if not pop.checkStatus(response) : 
-			self.show_error_mbox('pop3 error' , response.decode()) 
-			return None
-		response = pop.uidl()
-		if not pop.checkStatus(response) : 
-			self.show_error_mbox('pop3 error' , response.decode()) 
-			return None
-		# getting list of uidl's (message's and uidl code's)
-		self.uidl = pop3parser.uidl(response.decode())
-		self.mails = {}
-		# get's mail content's by list of uidl's 
-		for entry in self.uidl : 
-			response = pop.retr(entry[0]) # retrive mail (enttry[0] is mail number from uidl list)
-			if pop.checkStatus(response) :
-				mail =   pop3parser.retr(response.decode())
-				mail.uidl= entry[1] # save mail uidl in mail object 
-				self.mails[entry[0]] = mail
-		pop.close()
-	def Clear_inbox_fields(self):
-		self.ui.inbox_from_lineEdit.setText("")
-		self.ui.inbox_subject_lineEdit.setText("")
-		self.ui.inbox_body_textEdit.setText("")
-		self.ui.inbox_to_lineEdit.setText("")
-	def remove_mail_from_pop3_inbox(self, mailUidl):
-		'''
-		it is function for removing mail from pop3 mailbox 
-		'''
-		pop = pop3()
-		# start connection to pop3 server 
-		pop.connect(self.Config['pop3Server'] , 110) 
-		response = pop.user(self.Config['pop3User'])
-		if not self.pop3_Response_check(response) :
-			return False
-		# authentication with pop3 server using basic protocol user and pass command's
-		response = pop.pass_(self.Config['pop3Pass'])
-		if not self.pop3_Response_check(response) :
-			return False
-		response = pop.uidl()
-		if not self.pop3_Response_check(response) :
-			return False
-		# getting list of uidl's (message's and uidl code's)
-		uidls = pop3parser.uidl(response.decode())
-		targetMailNumber = -1 
-		for number , uidl in uidls : 
-			if uidl == mailUidl : 
-				targetMailNumber = number
-				break
-		if targetMailNumber == -1 : 
-			self.show_error_mbox('mail not found', "Cannot find selected mail in server mailbox .")
-			return False
-		response = pop.dele(targetMailNumber)
-		if not self.pop3_Response_check(response) :
-			return False
-		esponse = pop.quit()
-		if not self.pop3_Response_check(response) :
-			return False
-		pop.close()
-		return True
-	def pop3_Response_check(self , response):
-		if not response[0] == 43 : 
-			self.show_error_mbox('pop3 error' , response.decode()) 
-			return False
-		else :
-			return True 
-	def send_mail(self, mail ):
-		'''
-		it connect to smtp server and send mail 
-		'''
-		Smtp = smtp()
-		response = Smtp.connect(self.Config['smtpIp'] , 25) 
-		if not self.smtp_response_check(response) : 
-			return False
-		if self.Config.get('smtpUser') and self.Config.get('smtpPass') :
-			response = Smtp.authPlain(self.Config['smtpUser'], self.Config['smtpPass']) 
-			if not self.smtp_response_check(response) : 
-				return False
-		response = Smtp.mailFrom(mail.header.From) 
-		if not self.smtp_response_check(response) : 
-			return False
-		response = Smtp.rcptTo([mail.header.To]) 
-		for r in response.keys() :
-			if not self.smtp_response_check(response[r]) : 
-				return False
-		content = "From: {}\r\nTo: {}\r\nSubject: {}\r\n\r\n{}"\
-			.format(mail.header.From , mail.header.To , mail.header.Subject , mail.body) # this should implemented in Mail class
-		content.replace("\r\n.\r\n", "\r\n..\r\n")
-		response = Smtp.data(content) 
-		for r in response:
-			if not self.smtp_response_check(r) : 
-				return False
-		response = Smtp.quit() 
-		if not self.smtp_response_check(response) : 
-			return False
-		return True
+        for entry in self.uidl:
 
+            response = pop.retr(entry[0])
+            if pop.check_status(response):
+                mail = Pop3Parser.retr(response.decode())
+                mail.uidl = entry[1] # save mail uidl in mail object
+                self.mails[entry[0]] = mail
+        pop.close()
+    def clear_inbox_fields(self):
+        self.ui.inbox_from_lineEdit.setText("")
+        self.ui.inbox_subject_lineEdit.setText("")
+        self.ui.inbox_body_textEdit.setText("")
+        self.ui.inbox_to_lineEdit.setText("")
+    def remove_mail_from_pop3_inbox(self, mail_uidl):
+        '''
+        it is function for removing mail from pop3 mailbox
+        '''
+        pop = Pop3()
+        # start connection to pop3 server
+        pop.connect(self.config['pop3Server'], 110)
+        response = pop.user(self.config['pop3User'])
+        if not self.pop3_response_check(response):
+            return False
 
-	def smtp_response_check(self , response):
-		if  not (response[0] == 50 or  response[0] == 51 ): 
-			self.show_error_mbox('smtp error' , response.decode()) 
-			return False
-		else :
-			return True 
+        #authentication with pop3 server
+        #using basic protocol user and pass command's
+
+        response = pop.pass_(self.config['pop3Pass'])
+        if not self.pop3_response_check(response):
+            return False
+        response = pop.uidl()
+
+        if not self.pop3_response_check(response):
+            return False
+
+        # getting list of uidl's (message's and uidl code's)
+
+        uidls = Pop3Parser.uidl(response.decode())
+        target_mail_number = -1
+        for number, uidl in uidls:
+            if uidl == mail_uidl:
+                target_mail_number = number
+                break
+        if target_mail_number == -1:
+            self.show_error_mbox('mail not found', "Cannot find selected mail in server mailbox .")
+            return False
+        response = pop.dele(target_mail_number)
+        if not self.pop3_response_check(response):
+            return False
+        response = pop.quit()
+        if not self.pop3_response_check(response):
+            return False
+        pop.close()
+        return True
+    def pop3_response_check(self, response):
+        if not response[0] == 43:
+            self.show_error_mbox('pop3 error', response.decode())
+            return False
+        else:
+            return True
+    def send_mail(self, mail):
+        '''
+        it connect to smtp server and send mail
+        '''
+        smtp = Smtp()
+        response = smtp.connect(self.config['smtpIp'], 25)
+        if not self.smtp_response_check(response):
+            return False
+        if self.config.get('smtpUser') and self.config.get('smtpPass'):
+            response = smtp.auth_plain(self.config['smtpUser'], self.config['smtpPass'])
+            if not self.smtp_response_check(response):
+                return False
+        response = smtp.mail_from(mail.header.From)
+        if not self.smtp_response_check(response):
+            return False
+        response = smtp.rcpt_to([mail.header.To])
+        for r in response:
+            if not self.smtp_response_check(response[r]):
+                return False
+        content = "From: {}\r\nTo: {}\r\nSubject: {}\r\n\r\n{}".format(mail.header.From,
+                                                                       mail.header.To,
+                                                                       mail.header.Subject,
+                                                                       mail.body)
+        content.replace("\r\n.\r\n", "\r\n..\r\n")
+        response = smtp.data(content)
+        for r in response:
+            if not self.smtp_response_check(r):
+                return False
+        response = smtp.quit()
+        if not self.smtp_response_check(response):
+            return False
+        return True
+
+    def smtp_response_check(self, response):
+        if  not (response[0] == 50 or response[0] == 51):
+            self.show_error_mbox('smtp error', response.decode())
+            return False
+        else:
+            return True
 

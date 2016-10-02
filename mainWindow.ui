@@ -411,15 +411,15 @@
    <sender>inbox_mails_listView</sender>
    <signal>clicked(QModelIndex)</signal>
    <receiver>MainWindow</receiver>
-   <slot>inbox_listView_click(QModelIndex)</slot>
+   <slot>inbox_listview_click(QModelIndex)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>105</x>
-     <y>181</y>
+     <x>181</x>
+     <y>225</y>
     </hint>
     <hint type="destinationlabel">
-     <x>163</x>
-     <y>-12</y>
+     <x>185</x>
+     <y>-10</y>
     </hint>
    </hints>
   </connection>
@@ -427,7 +427,7 @@
  <slots>
   <slot>inbox_refresh_button_click()</slot>
   <slot>inbox_remove_button_click()</slot>
-  <slot>inbox_listView_click(QModelIndex)</slot>
+  <slot>inbox_listview_click(QModelIndex)</slot>
   <slot>compose_send_button_click()</slot>
   <slot>compose_clear_button_click()</slot>
   <slot>setting_menu_click()</slot>

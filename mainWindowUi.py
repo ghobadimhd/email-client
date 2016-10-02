@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainWindow.ui'
 #
-# Created: Sat Sep 17 13:40:50 2016
+# Created: Sun Oct  2 02:31:44 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -197,7 +197,7 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(self.inbox_remove_button, QtCore.SIGNAL(_fromUtf8("clicked()")), MainWindow.inbox_remove_button_click)
         QtCore.QObject.connect(self.compose_send_button, QtCore.SIGNAL(_fromUtf8("clicked()")), MainWindow.compose_send_button_click)
         QtCore.QObject.connect(self.compose_clear_button, QtCore.SIGNAL(_fromUtf8("clicked()")), MainWindow.compose_clear_button_click)
-        QtCore.QObject.connect(self.inbox_mails_listView, QtCore.SIGNAL(_fromUtf8("clicked(QModelIndex)")), MainWindow.inbox_listView_click)
+        QtCore.QObject.connect(self.inbox_mails_listView, QtCore.SIGNAL(_fromUtf8("clicked(QModelIndex)")), MainWindow.inbox_listview_click)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.compose_from_lineEdit, self.compose_to_lineEdit)
         MainWindow.setTabOrder(self.compose_to_lineEdit, self.compose_subject_lineEdit)
