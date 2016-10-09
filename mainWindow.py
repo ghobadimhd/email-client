@@ -118,6 +118,10 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.inbox_subject_lineEdit.setText(self.mails[mail_number].header.Subject)
         self.ui.inbox_body_textEdit.setText(self.mails[mail_number].body)
         self.ui.inbox_to_lineEdit.setText(self.mails[mail_number].header.To)
+    def exit_menu_click(self):
+        exit() 
+    def setting_menu_click(self):
+        pass
 
     def show_error_mbox(self, title, message):
         '''

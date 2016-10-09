@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainWindow.ui'
 #
-# Created: Sun Oct  2 02:31:44 2016
+# Created: Sun Oct  9 21:52:41 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -176,8 +176,8 @@ class Ui_MainWindow(object):
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 564, 27))
         self.menubar.setObjectName(_fromUtf8("menubar"))
-        self.menuAlskgh = QtGui.QMenu(self.menubar)
-        self.menuAlskgh.setObjectName(_fromUtf8("menuAlskgh"))
+        self.menu = QtGui.QMenu(self.menubar)
+        self.menu.setObjectName(_fromUtf8("menu"))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(MainWindow)
         self.statusbar.setObjectName(_fromUtf8("statusbar"))
@@ -186,10 +186,10 @@ class Ui_MainWindow(object):
         self.actionSetting.setObjectName(_fromUtf8("actionSetting"))
         self.actionExit = QtGui.QAction(MainWindow)
         self.actionExit.setObjectName(_fromUtf8("actionExit"))
-        self.menuAlskgh.addSeparator()
-        self.menuAlskgh.addAction(self.actionSetting)
-        self.menuAlskgh.addAction(self.actionExit)
-        self.menubar.addAction(self.menuAlskgh.menuAction())
+        self.menu.addSeparator()
+        self.menu.addAction(self.actionSetting)
+        self.menu.addAction(self.actionExit)
+        self.menubar.addAction(self.menu.menuAction())
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
@@ -198,6 +198,8 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(self.compose_send_button, QtCore.SIGNAL(_fromUtf8("clicked()")), MainWindow.compose_send_button_click)
         QtCore.QObject.connect(self.compose_clear_button, QtCore.SIGNAL(_fromUtf8("clicked()")), MainWindow.compose_clear_button_click)
         QtCore.QObject.connect(self.inbox_mails_listView, QtCore.SIGNAL(_fromUtf8("clicked(QModelIndex)")), MainWindow.inbox_listview_click)
+        QtCore.QObject.connect(self.actionExit, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.exit_menu_click)
+        QtCore.QObject.connect(self.actionSetting, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.setting_menu_click)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.compose_from_lineEdit, self.compose_to_lineEdit)
         MainWindow.setTabOrder(self.compose_to_lineEdit, self.compose_subject_lineEdit)
@@ -229,7 +231,7 @@ class Ui_MainWindow(object):
         self.compose_clear_button.setText(_translate("MainWindow", "Clear", None))
         self.compose_status_label.setText(_translate("MainWindow", "status", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab2), _translate("MainWindow", "Compose", None))
-        self.menuAlskgh.setTitle(_translate("MainWindow", "menu", None))
+        self.menu.setTitle(_translate("MainWindow", "menu", None))
         self.actionSetting.setText(_translate("MainWindow", "Setting", None))
         self.actionExit.setText(_translate("MainWindow", "Exit", None))
 
