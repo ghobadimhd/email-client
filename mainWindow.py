@@ -19,6 +19,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui = mainWindowUi.Ui_MainWindow()
         self.ui.setupUi(self)
         self.initialize()
+
     def initialize(self):
         self.read_setting(self.setting_path)
         #check smtp and pop3 config for exitance and send if not
@@ -45,7 +46,6 @@ class MainWindow(QtGui.QMainWindow):
             mbox.exec_()
             sys.exit()
 
-
     def read_setting(self, setting_path):
         """read client setting from file"""
         with open(setting_path, 'r') as config_file:
@@ -60,7 +60,6 @@ class MainWindow(QtGui.QMainWindow):
         for  param in key_value:
             config[param[0]] = param[1]
         self.config = config
-
 
     def inbox_refresh_button_click(self):
         '''
@@ -90,6 +89,7 @@ class MainWindow(QtGui.QMainWindow):
         else:
             self.show_error_mbox("select mail",
                                  "Please select a mail from list")
+
     def compose_send_button_click(self):
         '''
         it send mail through the smtp server
@@ -102,11 +102,13 @@ class MainWindow(QtGui.QMainWindow):
         is_ok = self.send_mail(mail)
         if is_ok:
             self.compose_clear_button_click() #clear form
+
     def compose_clear_button_click(self):
         self.ui.compose_from_lineEdit.setText("")
         self.ui.compose_to_lineEdit.setText("")
         self.ui.compose_subject_lineEdit.setText("")
         self.ui.compose_body_textEdit.setText("")
+
     def inbox_listview_click(self, qmodel_index):
         '''
         show content of selected mail in TextBox's
@@ -118,8 +120,10 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.inbox_subject_lineEdit.setText(self.mails[mail_number].header.Subject)
         self.ui.inbox_body_textEdit.setText(self.mails[mail_number].body)
         self.ui.inbox_to_lineEdit.setText(self.mails[mail_number].header.To)
+
     def exit_menu_click(self):
         exit() 
+        
     def setting_menu_click(self):
         pass
 
@@ -131,6 +135,7 @@ class MainWindow(QtGui.QMainWindow):
         mbox.setWindowTitle(title)
         mbox.setText(message)
         mbox.exec_()
+
     def get_mails(self):
         '''
         this method get mail's from pop3 server
@@ -169,11 +174,13 @@ class MainWindow(QtGui.QMainWindow):
                 mail.uidl = entry[1] # save mail uidl in mail object
                 self.mails[entry[0]] = mail
         pop.close()
+
     def clear_inbox_fields(self):
         self.ui.inbox_from_lineEdit.setText("")
         self.ui.inbox_subject_lineEdit.setText("")
         self.ui.inbox_body_textEdit.setText("")
         self.ui.inbox_to_lineEdit.setText("")
+
     def remove_mail_from_pop3_inbox(self, mail_uidl):
         '''
         it is function for removing mail from pop3 mailbox
@@ -215,12 +222,14 @@ class MainWindow(QtGui.QMainWindow):
             return False
         pop.close()
         return True
+
     def pop3_response_check(self, response):
         if not response[0] == 43:
             self.show_error_mbox('pop3 error', response.decode())
             return False
         else:
             return True
+
     def send_mail(self, mail):
         '''
         it connect to smtp server and send mail
