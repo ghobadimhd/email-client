@@ -5,13 +5,14 @@ from parser import Pop3Parser, Mail
 from PyQt4 import QtGui
 from smtp import Smtp
 from pop3 import Pop3
+import setting
 import mainWindowUi
 
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
-        self.config = {}
+        self.setting = {}
         self.mails = []
         self.uidl = []
         self.setting_path = '.setting'
@@ -21,10 +22,10 @@ class MainWindow(QtGui.QMainWindow):
         self.initialize()
 
     def initialize(self):
-        self.read_setting(self.setting_path)
+        self.setting = setting.read_section()
         #check smtp and pop3 config for exitance and send if not
-        if (self.config.get('smtpServer') is None or
-                self.config.get('pop3Server') is None):
+        if (self.setting.get('smtp_server') is None or
+                self.setting.get('pop3_server') is None):
             mbox = QtGui.QMessageBox()
             mbox.setWindowTitle("cannot find server's")
             mbox.setText("There is no smtp/pop3 server .\n"
@@ -33,11 +34,11 @@ class MainWindow(QtGui.QMainWindow):
             mbox.exec_()
             sys.exit()
         #resolve pop3 and smtp hostname to ip
-        self.config['smtpIp'] = socket.gethostbyname(self.config['smtpServer'])
-        self.config['pop3Ip'] = socket.gethostbyname(self.config['pop3Server'])
+        self.setting['smtpIp'] = socket.gethostbyname(self.setting['smtp_server'])
+        self.setting['pop3Ip'] = socket.gethostbyname(self.setting['pop3_server'])
         #check pop3 username and password
-        if (self.config.get('pop3User') is None
-                or self.config.get('pop3Pass') is None):
+        if (self.setting.get('pop3_user') is None
+                or self.setting.get('pop3_pass') is None):
             mbox = QtGui.QMessageBox()
             mbox.setWindowTitle("cannot find username/password for pop3 ")
             mbox.setText("There is no username/password .\n"
@@ -45,21 +46,6 @@ class MainWindow(QtGui.QMainWindow):
                          "(.setting) and rerun the Program.")
             mbox.exec_()
             sys.exit()
-
-    def read_setting(self, setting_path):
-        """read client setting from file"""
-        with open(setting_path, 'r') as config_file:
-            temp = config_file.readlines()
-            setting = ''
-            for line in temp:
-                setting = setting + line
-            del temp
-        regex = re.compile('(.*):(.*)')
-        key_value = regex.findall(setting)
-        config = {}
-        for  param in key_value:
-            config[param[0]] = param[1]
-        self.config = config
 
     def inbox_refresh_button_click(self):
         '''
@@ -123,7 +109,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def exit_menu_click(self):
         exit() 
-        
+
     def setting_menu_click(self):
         pass
 
@@ -144,14 +130,14 @@ class MainWindow(QtGui.QMainWindow):
         '''
         pop = Pop3()
         # start connection to pop3 server
-        pop.connect(self.config['pop3Server'], 110)
-        response = pop.user(self.config['pop3User'])
+        pop.connect(self.setting['pop3_server'], 110)
+        response = pop.user(self.setting['pop3_user'])
         if not pop.check_status(response):
             self.show_error_mbox('pop3 error', response.decode())
             return None
         # authentication with pop3 server
         #using basic protocol user and pass command's
-        response = pop.pass_(self.config['pop3Pass'])
+        response = pop.pass_(self.setting['pop3_pass'])
         if not pop.check_status(response):
             self.show_error_mbox('pop3 error', response.decode())
             return None
@@ -187,15 +173,15 @@ class MainWindow(QtGui.QMainWindow):
         '''
         pop = Pop3()
         # start connection to pop3 server
-        pop.connect(self.config['pop3Server'], 110)
-        response = pop.user(self.config['pop3User'])
+        pop.connect(self.setting['pop3_server'], 110)
+        response = pop.user(self.setting['pop3_user'])
         if not self.pop3_response_check(response):
             return False
 
         #authentication with pop3 server
         #using basic protocol user and pass command's
 
-        response = pop.pass_(self.config['pop3Pass'])
+        response = pop.pass_(self.setting['pop3_pass'])
         if not self.pop3_response_check(response):
             return False
         response = pop.uidl()
@@ -235,11 +221,11 @@ class MainWindow(QtGui.QMainWindow):
         it connect to smtp server and send mail
         '''
         smtp = Smtp()
-        response = smtp.connect(self.config['smtpIp'], 25)
+        response = smtp.connect(self.setting['smtpIp'], 25)
         if not self.smtp_response_check(response):
             return False
-        if self.config.get('smtpUser') and self.config.get('smtpPass'):
-            response = smtp.auth_plain(self.config['smtpUser'], self.config['smtpPass'])
+        if self.setting.get('smtpUser') and self.setting.get('smtpPass'):
+            response = smtp.auth_plain(self.setting['smtpUser'], self.setting['smtpPass'])
             if not self.smtp_response_check(response):
                 return False
         response = smtp.mail_from(mail.header.From)
@@ -269,4 +255,3 @@ class MainWindow(QtGui.QMainWindow):
             return False
         else:
             return True
-
