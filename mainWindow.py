@@ -1,6 +1,4 @@
-import re
 import sys
-import socket
 from parser import Pop3Parser, Mail
 from PyQt4 import QtGui
 from smtp import Smtp
@@ -33,9 +31,6 @@ class MainWindow(QtGui.QMainWindow):
                          " (.setting) and rerun the Program.")
             mbox.exec_()
             sys.exit()
-        #resolve pop3 and smtp hostname to ip
-        self.setting['smtpIp'] = socket.gethostbyname(self.setting['smtp_server'])
-        self.setting['pop3Ip'] = socket.gethostbyname(self.setting['pop3_server'])
         #check pop3 username and password
         if (self.setting.get('pop3_user') is None
                 or self.setting.get('pop3_pass') is None):
@@ -108,7 +103,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.inbox_to_lineEdit.setText(self.mails[mail_number].header.To)
 
     def exit_menu_click(self):
-        exit() 
+        exit()
 
     def setting_menu_click(self):
         pass
@@ -221,7 +216,7 @@ class MainWindow(QtGui.QMainWindow):
         it connect to smtp server and send mail
         '''
         smtp = Smtp()
-        response = smtp.connect(self.setting['smtpIp'], 25)
+        response = smtp.connect(self.setting['smtp_server'], 25)
         if not self.smtp_response_check(response):
             return False
         if self.setting.get('smtpUser') and self.setting.get('smtpPass'):
