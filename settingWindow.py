@@ -5,7 +5,7 @@ from PyQt4 import QtGui
 from settingWindowUi import Ui_settingWindow
 
 
-class SettingWindow(QtGui.QMainWindow):
+class SettingWindow(QtGui.QDialog):
     """Show window for editing settings"""
 
     def __init__(self):
@@ -40,7 +40,7 @@ class SettingWindow(QtGui.QMainWindow):
         self.client_setting['pop3_pass'] = self.ui.pop3Password_lineEdit.text()
 
         setting.write(self.client_setting)
-        exit()
+        self.close()
 
     def cancel_button_click(self):
-        exit()
+        self.close()
