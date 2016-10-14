@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainWindow.ui'
 #
-# Created: Sun Oct  9 21:52:41 2016
+# Created: Fri Oct 14 12:41:51 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -166,9 +166,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addLayout(self.horizontalLayout_4)
         self.verticalLayout_3 = QtGui.QVBoxLayout()
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
-        self.compose_status_label = QtGui.QLabel(self.tab2)
-        self.compose_status_label.setObjectName(_fromUtf8("compose_status_label"))
-        self.verticalLayout_3.addWidget(self.compose_status_label)
         self.verticalLayout_2.addLayout(self.verticalLayout_3)
         self.tabWidget.addTab(self.tab2, _fromUtf8(""))
         self.gridLayout.addWidget(self.tabWidget, 0, 0, 1, 1)
@@ -229,7 +226,6 @@ class Ui_MainWindow(object):
         self.label_4.setText(_translate("MainWindow", "Body :", None))
         self.compose_send_button.setText(_translate("MainWindow", "Send", None))
         self.compose_clear_button.setText(_translate("MainWindow", "Clear", None))
-        self.compose_status_label.setText(_translate("MainWindow", "status", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab2), _translate("MainWindow", "Compose", None))
         self.menu.setTitle(_translate("MainWindow", "menu", None))
         self.actionSetting.setText(_translate("MainWindow", "Setting", None))

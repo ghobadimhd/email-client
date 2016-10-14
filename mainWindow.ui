@@ -278,15 +278,7 @@
          </layout>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <widget class="QLabel" name="compose_status_label">
-            <property name="text">
-             <string>status</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <layout class="QVBoxLayout" name="verticalLayout_3"/>
         </item>
        </layout>
       </widget>
@@ -430,8 +422,8 @@
    <slot>exit_menu_click()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>68</x>
-     <y>77</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>281</x>
