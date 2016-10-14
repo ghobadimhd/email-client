@@ -23,19 +23,23 @@ class SettingWindow(QtGui.QDialog):
             setting.add_missing_param(self.client_setting)
 
             self.ui.smtpServer_lineEdit.setText(self.client_setting['smtp_server'])
+            self.ui.smtp_port_lineEdit.setText(self.client_setting['smtp_port'])
             self.ui.smtpUser_lineEdit.setText(self.client_setting['smtp_user'])
             self.ui.smtpPassword_lineEdit.setText(self.client_setting['smtp_pass'])
 
             self.ui.pop3Server_lineEdit.setText(self.client_setting['pop3_server'])
+            self.ui.pop3_port_lineEdit.setText(self.client_setting['pop3_port'])
             self.ui.pop3User_lineEdit.setText(self.client_setting['pop3_user'])
             self.ui.pop3Password_lineEdit.setText(self.client_setting['pop3_pass'])
 
     def save_button_click(self):
         self.client_setting['smtp_server'] = self.ui.smtpServer_lineEdit.text()
+        self.client_setting['smtp_port'] = self.ui.smtp_port_lineEdit.text()
         self.client_setting['smtp_user'] = self.ui.smtpUser_lineEdit.text()
         self.client_setting['smtp_pass'] = self.ui.smtpPassword_lineEdit.text()
 
         self.client_setting['pop3_server'] = self.ui.pop3Server_lineEdit.text()
+        self.client_setting['pop3_port'] = self.ui.pop3_port_lineEdit.text()
         self.client_setting['pop3_user'] = self.ui.pop3User_lineEdit.text()
         self.client_setting['pop3_pass'] = self.ui.pop3Password_lineEdit.text()
 

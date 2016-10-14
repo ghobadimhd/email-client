@@ -124,7 +124,7 @@ class MainWindow(QtGui.QMainWindow):
         '''
         pop = Pop3()
         # start connection to pop3 server
-        pop.connect(self.client_setting['pop3_server'], 110)
+        pop.connect(self.client_setting['pop3_server'], self.client_setting.getint('pop3_port'))
         response = pop.user(self.client_setting['pop3_user'])
         if not pop.check_status(response):
             self.show_error_mbox('pop3 error', response.decode())
@@ -167,7 +167,7 @@ class MainWindow(QtGui.QMainWindow):
         '''
         pop = Pop3()
         # start connection to pop3 server
-        pop.connect(self.client_setting['pop3_server'], 110)
+        pop.connect(self.client_setting['pop3_server'], self.client_setting.getint('pop3_port'))
         response = pop.user(self.client_setting['pop3_user'])
         if not self.pop3_response_check(response):
             return False
@@ -215,12 +215,12 @@ class MainWindow(QtGui.QMainWindow):
         it connect to smtp server and send mail
         '''
         smtp = Smtp()
-        response = smtp.connect(self.client_setting['smtp_server'], 25)
+        response = smtp.connect(self.client_setting['smtp_server'], self.client_setting.getint('smtp_port'))
         if not self.smtp_response_check(response):
             return False
 
-        if self.client_setting.get('smtpUser') and self.client_setting.get('smtpPass'):
-            response = smtp.auth_plain(self.client_setting['smtpUser'], self.client_setting['smtpPass'])
+        if self.client_setting.get('smtp_user') and self.client_setting.get('smtp_pass'):
+            response = smtp.auth_plain(self.client_setting['smtp_user'], self.client_setting['smtp_pass'])
             if not self.smtp_response_check(response):
                 return False
 

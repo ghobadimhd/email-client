@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'settingWindow.ui'
 #
-# Created: Wed Oct 12 23:04:47 2016
+# Created: Fri Oct 14 12:10:12 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_settingWindow(object):
     def setupUi(self, settingWindow):
         settingWindow.setObjectName(_fromUtf8("settingWindow"))
-        settingWindow.resize(244, 317)
+        settingWindow.resize(244, 338)
         self.gridLayout = QtGui.QGridLayout(settingWindow)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.verticalLayout = QtGui.QVBoxLayout()
@@ -40,6 +40,15 @@ class Ui_settingWindow(object):
         self.smtpServer_lineEdit.setObjectName(_fromUtf8("smtpServer_lineEdit"))
         self.horizontalLayout_3.addWidget(self.smtpServer_lineEdit)
         self.verticalLayout.addLayout(self.horizontalLayout_3)
+        self.horizontalLayout_smtp_port = QtGui.QHBoxLayout()
+        self.horizontalLayout_smtp_port.setObjectName(_fromUtf8("horizontalLayout_smtp_port"))
+        self.label_smtp_port = QtGui.QLabel(settingWindow)
+        self.label_smtp_port.setObjectName(_fromUtf8("label_smtp_port"))
+        self.horizontalLayout_smtp_port.addWidget(self.label_smtp_port)
+        self.smtp_port_lineEdit = QtGui.QLineEdit(settingWindow)
+        self.smtp_port_lineEdit.setObjectName(_fromUtf8("smtp_port_lineEdit"))
+        self.horizontalLayout_smtp_port.addWidget(self.smtp_port_lineEdit)
+        self.verticalLayout.addLayout(self.horizontalLayout_smtp_port)
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
         self.label_2 = QtGui.QLabel(settingWindow)
@@ -75,6 +84,15 @@ class Ui_settingWindow(object):
         self.pop3Server_lineEdit.setObjectName(_fromUtf8("pop3Server_lineEdit"))
         self.horizontalLayout_5.addWidget(self.pop3Server_lineEdit)
         self.verticalLayout.addLayout(self.horizontalLayout_5)
+        self.horizontalLayout_pop3_port = QtGui.QHBoxLayout()
+        self.horizontalLayout_pop3_port.setObjectName(_fromUtf8("horizontalLayout_pop3_port"))
+        self.label_pop3_port = QtGui.QLabel(settingWindow)
+        self.label_pop3_port.setObjectName(_fromUtf8("label_pop3_port"))
+        self.horizontalLayout_pop3_port.addWidget(self.label_pop3_port)
+        self.pop3_port_lineEdit = QtGui.QLineEdit(settingWindow)
+        self.pop3_port_lineEdit.setObjectName(_fromUtf8("pop3_port_lineEdit"))
+        self.horizontalLayout_pop3_port.addWidget(self.pop3_port_lineEdit)
+        self.verticalLayout.addLayout(self.horizontalLayout_pop3_port)
         self.horizontalLayout_4 = QtGui.QHBoxLayout()
         self.horizontalLayout_4.setObjectName(_fromUtf8("horizontalLayout_4"))
         self.label_4 = QtGui.QLabel(settingWindow)
@@ -107,11 +125,6 @@ class Ui_settingWindow(object):
         self.horizontalLayout_7.addWidget(self.cancel_button)
         self.verticalLayout.addLayout(self.horizontalLayout_7)
         self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
-        self.menubar = QtGui.QMenuBar(settingWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 244, 27))
-        self.menubar.setObjectName(_fromUtf8("menubar"))
-        self.statusbar = QtGui.QStatusBar(settingWindow)
-        self.statusbar.setObjectName(_fromUtf8("statusbar"))
 
         self.retranslateUi(settingWindow)
         QtCore.QObject.connect(self.save_button, QtCore.SIGNAL(_fromUtf8("clicked()")), settingWindow.save_button_click)
@@ -128,9 +141,11 @@ class Ui_settingWindow(object):
     def retranslateUi(self, settingWindow):
         settingWindow.setWindowTitle(_translate("settingWindow", "Setting", None))
         self.label_3.setText(_translate("settingWindow", "smtp server :", None))
+        self.label_smtp_port.setText(_translate("settingWindow", "smtp port :", None))
         self.label_2.setText(_translate("settingWindow", "smtp user :", None))
         self.label_6.setText(_translate("settingWindow", "smtp password :", None))
         self.label_5.setText(_translate("settingWindow", "Pop3 server :", None))
+        self.label_pop3_port.setText(_translate("settingWindow", "Pop3 server :", None))
         self.label_4.setText(_translate("settingWindow", "Pop3 user :", None))
         self.label.setText(_translate("settingWindow", "Pop3 password :", None))
         self.save_button.setText(_translate("settingWindow", "Save", None))
