@@ -189,9 +189,11 @@
  </widget>
  <tabstops>
   <tabstop>smtpServer_lineEdit</tabstop>
+  <tabstop>smtp_port_lineEdit</tabstop>
   <tabstop>smtpUser_lineEdit</tabstop>
   <tabstop>smtpPassword_lineEdit</tabstop>
   <tabstop>pop3Server_lineEdit</tabstop>
+  <tabstop>pop3_port_lineEdit</tabstop>
   <tabstop>pop3User_lineEdit</tabstop>
   <tabstop>pop3Password_lineEdit</tabstop>
   <tabstop>cancel_button</tabstop>

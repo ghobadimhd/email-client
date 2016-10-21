@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'settingWindow.ui'
 #
-# Created: Fri Oct 14 12:10:12 2016
+# Created: Fri Oct 21 15:46:46 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -130,10 +130,12 @@ class Ui_settingWindow(object):
         QtCore.QObject.connect(self.save_button, QtCore.SIGNAL(_fromUtf8("clicked()")), settingWindow.save_button_click)
         QtCore.QObject.connect(self.cancel_button, QtCore.SIGNAL(_fromUtf8("clicked()")), settingWindow.cancel_button_click)
         QtCore.QMetaObject.connectSlotsByName(settingWindow)
-        settingWindow.setTabOrder(self.smtpServer_lineEdit, self.smtpUser_lineEdit)
+        settingWindow.setTabOrder(self.smtpServer_lineEdit, self.smtp_port_lineEdit)
+        settingWindow.setTabOrder(self.smtp_port_lineEdit, self.smtpUser_lineEdit)
         settingWindow.setTabOrder(self.smtpUser_lineEdit, self.smtpPassword_lineEdit)
         settingWindow.setTabOrder(self.smtpPassword_lineEdit, self.pop3Server_lineEdit)
-        settingWindow.setTabOrder(self.pop3Server_lineEdit, self.pop3User_lineEdit)
+        settingWindow.setTabOrder(self.pop3Server_lineEdit, self.pop3_port_lineEdit)
+        settingWindow.setTabOrder(self.pop3_port_lineEdit, self.pop3User_lineEdit)
         settingWindow.setTabOrder(self.pop3User_lineEdit, self.pop3Password_lineEdit)
         settingWindow.setTabOrder(self.pop3Password_lineEdit, self.cancel_button)
         settingWindow.setTabOrder(self.cancel_button, self.save_button)
